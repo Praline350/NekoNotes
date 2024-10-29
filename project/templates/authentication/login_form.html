@@ -1,0 +1,40 @@
+<form method="post">
+    {% csrf_token %}
+    <div>
+        {{ signup_form.email.label_tag }}
+        {{ signup_form.email }}
+        {% for error in signup_form.email.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ signup_form.username.label_tag }}
+        {{ signup_form.username }}
+        {% for error in signup_form.username.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ signup_form.password1.label_tag }}
+        {{ signup_form.password1 }}
+        {% for error in signup_form.password1.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ signup_form.password2.label_tag }}
+        {{ signup_form.password2 }}
+        {% for error in signup_form.password2.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <button type="submit" name="signup_form">S'inscrire</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+</form>
