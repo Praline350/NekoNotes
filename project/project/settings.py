@@ -81,6 +81,9 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": "localhost",
         "PORT": "3306",
+        "TEST": {
+            "NAME": "test_nekonotes_db",
+        },
     }
 }
 
