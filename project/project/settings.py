@@ -24,6 +24,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Active django-compressor pour utiliser 'COMPRESS_PRECOMPILERS'
+# Compilation pour les fichier scss
+COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
+
+# Autres configurations pour django-compressor
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False  # Compilation en développement
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -33,23 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tailwind",
-    "theme",
+    "compressor",
+    "sass_processor",
     # web site app
     "app_authentication",
     "app_widgets",
     "app_dashboards",
     "app_profiles",
 ]
-
-TAILWIND_APP_NAME = "theme"
-
-TAILWIND_CSS_OUTPUT = "static/css/dist/style.css"
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-NPM_BIN_PATH = "D:/npm.cmd"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -131,12 +131,24 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# Static files
 
 STATIC_URL = "static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# For Scss
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
+
+SASS_PROCESSOR_ENABLED = True
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

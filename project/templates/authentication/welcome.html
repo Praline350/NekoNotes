@@ -1,8 +1,8 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<section class="grid">
-    <div class="grid1">
-        <h1>Nekonotes</h1>
+<section class="section section--flex">
+    <div class="intro">
+        <h1 class="title">Nekonotes</h1>
         <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nisi aspernatur 
             accusantium doloremque harum odit quibusdam explicabo aliquid? 
@@ -10,7 +10,7 @@
             necessitatibus?
         </p>
     </div>
-    <div class="grid2">
+    <div class="">
         {% include 'authentication/login_form.html' with signup_form=signup_form %}
     </div>
 

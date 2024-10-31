@@ -1,0 +1,25 @@
+@import 'variables';
+
+// Welcome pages 
+
+.title {
+    font-family: "Lilita One", serif;
+    font-weight: 400;
+    font-style: normal;
+    color : $title_primary_color;
+}
+
+.section {
+    margin: $m_1;
+    padding: $p_1;
+    &--flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+    }
+}
+
+.intro {
+    max-width: 500px;
+}

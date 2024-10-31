@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-{% load static %}{% load static tailwind_tags %}
+{% load static %}
+{% load sass_tags %}
+{% load compress %}
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% tailwind_css %}
-    <!-- <link href="{% static 'css/dist/style.css' %}" rel="'stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="'stylesheet">
+    {% compress css %}
+    <link rel="stylesheet" href="{% sass_src 'scss/main.scss' %}">
+    {% endcompress %}
     <title>{% block title %}NekoNotes{% endblock title %}</title>
 </head>
 <body>
-    <header>
-        <nav> <!-- Include nav component--></nav>
-    </header>
-    <side>
-
-    </side>
-    <main>
-        
+    {% block header %}{% endblock header %}
+    <main> 
         {% block content %}
         <!--Content of specifique page-->
         {% endblock content %}
-        <div>
-        </div>
     </main>
     <footer>
 
