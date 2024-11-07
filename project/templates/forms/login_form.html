@@ -1,0 +1,22 @@
+<form class="form" method="post">
+    {% csrf_token %}
+    <div class="form--field">
+        {{ login_form.login_username}}
+        {% for error in login_form.login_username.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="form--field">
+        {{ login_form.password}}
+        {% for error in login_form.password.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <button class="formBtn" type="submit" name="login_form">Login</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message">{{ message }}</div>
+    {% endfor %}
+{% endif %}

@@ -1,34 +1,30 @@
-<form class="" method="post">
+<form class="form" method="post">
     {% csrf_token %}
-    <div class="">
-        {{ signup_form.email.label_tag }}
+    <div class="form--field">
         {{ signup_form.email }}
         {% for error in signup_form.email.errors %}
             <div class="error">{{ error }}</div>
         {% endfor %}
     </div>
-    <div class="">
-        {{ signup_form.username.label_tag }}
+    <div class="form--field">
         {{ signup_form.username }}
         {% for error in signup_form.username.errors %}
             <div class="error">{{ error }}</div>
         {% endfor %}
     </div>
-    <div class="">
-        {{ signup_form.password1.label_tag }}
+    <div class="form--field">
         {{ signup_form.password1 }}
         {% for error in signup_form.password1.errors %}
             <div class="error">{{ error }}</div>
         {% endfor %}
     </div>
-    <div class="">
-        {{ signup_form.password2.label_tag }}
+    <div class="form--field">
         {{ signup_form.password2 }}
         {% for error in signup_form.password2.errors %}
             <div class="error">{{ error }}</div>
         {% endfor %}
     </div>
-    <button class="" type="submit" name="signup_form">S'inscrire</button>
+    <button class="formBtn" type="submit" name="signup_form">SignUp</button>
 </form>
 
 {% if messages %}
@@ -37,5 +33,4 @@
     {% endfor %}
 {% endif %}
 
-</form>
 

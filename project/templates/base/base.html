@@ -14,13 +14,28 @@
     {% endcompress %}
     <title>{% block title %}NekoNotes{% endblock title %}</title>
 </head>
-<body>
-    {% block header %}{% endblock header %}
-    <main> 
+<body class="cloudBackground">
+    <header class="header">
+        <nav class="navBar">
+            <div class="navBar navBar--iconTitle">
+                <img class="mainIcon" src="{% static 'images/icons/logo_transparent.png' %}"  al="logo">
+                <a href="{% url 'welcome' %}" class="title title--navbar">Nekonotes</a>
+            </div>
+            {% if user.is_authenticated %}
+
+            {% endif %}
+            {% block navbar %}
+            <!-- Login Button on WelcomePage -->
+            {% endblock navbar %}
+        </nav>
+
+    </header>
         {% block content %}
+
         <!--Content of specifique page-->
+    
         {% endblock content %}
-    </main>
+        <a href="{% url 'logout' %}">Logout</a>
     <footer>
 
     </footer>

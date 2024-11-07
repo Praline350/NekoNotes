@@ -1,0 +1,82 @@
+@import '../../scss/variables.scss';
+
+
+
+// Layout
+
+.formLayout {
+    width: 400px;
+    height: auto;
+    padding: $form-padding;
+    padding-top: 0px;
+    background: rgba(255, 255, 255, 0.9); /* Semi-translucide (effet vitre) */
+    border-radius: $border-radius;
+    box-shadow: 0 4px 8px $shadow-color; /* Ombre douce pour donner de la profondeur */
+    backdrop-filter: blur(10px); /* Flou d'arrière-plan pour l'effet vitre */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Bordure légère */
+    
+    /* Pour s'assurer que le formulaire soit centré */
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.formHeader {
+    margin-bottom: 20px;
+    & h2  {
+        text-align: center;
+    }
+    & p {
+        text-align: center;
+    }
+
+}
+
+// Authentication Form
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    &--field {
+        display: flex;
+        flex-direction: column;
+        & label{
+        }
+        & input{
+            max-width: 96%;
+            padding: $p_input;
+            border: 1px solid grey;
+            border-radius: $radius_input;
+            transition: all 0.3s ease;
+            &:focus {
+                scale: 1.08;
+                box-shadow: 0 0 5px $title_primary_color;
+            }
+        }
+    }
+}
+
+.formBtn {
+    background-color: $title_primary_color;
+    color: $bg_primary_color;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        background-color: $shadow_primary_color; /* Change la couleur au survol */
+    }
+
+    &:active {
+        background-color: $shadow_primary_color; /* Change la couleur au clic */
+    }
+}
+
+

@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 
-from .views import WelcomeView
+from .views import *
 
 urlpatterns = [
-    path("welcome/", WelcomeView.as_view(), name="welcome"),
+    path("", WelcomeView.as_view(), name="welcome"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", logout_user, name="logout"),
 ]

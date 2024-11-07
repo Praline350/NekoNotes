@@ -39,6 +39,39 @@ class WelcomeView(View):
         return render(request, self.template_name, context=context)
 
 
+class LoginView(View):
+    template_name = "authentication/login.html"
+    login_form = LoginForm
+
+    def get(self, request):
+        """Handle GET requests: instantiate blank login form or redirect home."""
+
+        if request.user.is_authenticated:
+            return redirect("home")
+        login_form = self.login_form()
+        context = {"login_form": login_form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        """Handle POST requests: create a new account."""
+        login_form = self.login_form(request.POST)
+        if login_form.is_valid():
+            user = authenticate(
+                username=login_form.cleaned_data["login_username"],
+                password=login_form.cleaned_data["password"],
+            )
+            if user is not None:
+                login(request, user)
+                return redirect("home")
+            else:
+                messages.error(request, "Identifiants invalides")
+        else:
+            messages.error(request, "Erreur lors de l'inscription")
+            print(login_form.errors)
+        context = {"login_form": login_form}
+        return render(request, self.template_name, context=context)
+
+
 @login_required
 def logout_user(request):
     """Log out the user and redirect to the login page."""

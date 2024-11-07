@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<section class="section section--flex">
+    <div class="formLayout ">
+        <div class="formHeader">
+            <h2>
+                Welcome Back !
+            </h2>
+            <p>
+                We're enjoy to see you ! Your Neko'Board is waiting for you !
+            </p>
+        </div>
+        {% include 'forms/login_form.html' with login_form=login_form %}
+    </div>
+
+</section>
+<div>
+    <a href="{% url 'welcome' %}">Retour</a>
+</div>
+
+{% endblock content %}
