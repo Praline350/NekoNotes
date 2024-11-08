@@ -5,7 +5,7 @@
 {% endblock navbar %}
 
 {% block content %}
-<main >
+<main class="cloudBackground">
     <section class="section section--flex">
         <div class="intro">
             <h1 class="title title--intro">Organize your days and goals<br>with ease.</h1>
@@ -26,6 +26,10 @@
             </div>
             {% include 'forms/signup_form.html' with signup_form=signup_form %}
         </div>
+    </section>
+    <section class="section section--flex">
+
+
     </section>
 </main>
 {% endblock content %}

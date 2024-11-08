@@ -1,0 +1,31 @@
+@import '../variables.scss';
+
+
+.dashboardContent {
+    display: flex;
+    flex-direction: row;
+}
+.toolBar {
+    margin-top: $m_1;
+    border-top:1px solid #ccc;
+    width:  200px;
+    height: 100vh;
+}
+
+
+
+#dashboard {
+    background-color: $dashboard_background;
+    margin-top: $m_1;
+    padding: $p_1;
+    width: 200vh;
+    height: 100vh;
+}
+
+#dashboard {
+    border: 1px solid #ccc;
+}
+
+
+
+

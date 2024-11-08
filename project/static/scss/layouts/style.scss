@@ -1,0 +1,116 @@
+@import '../variables.scss';
+
+
+// Réinitialisation des marges et padding
+*,
+*::before,
+*::after {
+    box-sizing: border-box; // Définit box-sizing pour tous les éléments pour éviter les dépassements
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100vh; // S'assure que le body prend toujours la hauteur de la fenêtre
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; // Cache les débordements horizontaux
+    font-family: Arial, sans-serif; // Police par défaut
+    line-height: 1.5; // Améliore la lisibilité du texte
+    color: #333; // Couleur de texte par défaut
+    background-color: $bg_primary_color; // Couleur de fond par défaut
+}
+
+// Style de base pour toutes les images et vidéos
+img,
+video {
+    max-width: 100%; // Empêche les images de dépasser leurs conteneurs
+    height: auto;
+}
+
+.header {
+    position: sticky;
+    top:0;
+    z-index: 1000;
+    max-width: 100%;
+}
+
+// NavBar
+
+
+.navBar {
+    display: flex;
+    flex-direction: row;
+    max-height: 100px;
+    padding-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+    &--iconTitle{
+        justify-self: left;
+        padding-left: 50px;
+    }
+    &--btn {
+        justify-self: center;
+        align-self: center;
+        margin-right: 50px;
+
+    }
+}
+
+.mainIcon {
+    width: auto;
+    height: 40px;
+}
+
+
+// Welcome pages 
+
+.title {
+    display: block;
+    font-family: "Lilita One", serif;
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: none;
+    &--navbar {
+        font-size: 2.5em;
+        color: $title_primary_color;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        padding-left: 5px;
+    }
+    &--intro {
+        font-size: 2em;
+    }
+}
+
+
+.cloudBackground {
+    background-image: url('../images/backgrounds/cloud-second.png') ;
+    background-size: cover;
+    background-position: center center;
+    min-height: 100vh;
+}
+
+.section {
+    margin: $m_1;
+    padding: $p_1;
+    &--flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+    }
+
+}
+
+.intro {
+    padding-left: 100px;
+    padding-bottom: 60px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    & p {
+        font-size: larger;
+    }
+}

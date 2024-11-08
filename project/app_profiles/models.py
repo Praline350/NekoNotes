@@ -20,6 +20,14 @@ class Color(models.Model):
             raise ValidationError(f"{self.hex_code} is not a valid hex color code.")
 
 
+class Theme(models.Model):
+    name = models.CharField(max_length=120)
+    colors = models.ManyToManyField(Color, related_name="themes")
+
+    def __str__(self):
+        return self.name
+
+
 class Palette(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)

@@ -15,12 +15,14 @@ class Task(models.Model):
 
 
 class SimpleTodoList(Widget):
+    name = models.CharField(max_length=120, default="Simple Todo List")
+    title = models.CharField(max_length=120, default="Simple Todo List")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     progress_bar = models.PositiveIntegerField(
         default=100, validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
-    tasks = models.ManyToManyField(Task, related_name="todo_lists")
+    tasks = models.ManyToManyField(Task, related_name="todo_lists", blank=True)
 
     def __str__(self):
         return self.name

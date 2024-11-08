@@ -1,1 +1,25 @@
 {%extends 'base/base.html' %}
+{%  load static%}
+{% load custom_filter %}
+{% block content %}
+
+<main class="dashboardContent">
+    <aside class="toolBar">
+        <!-- Menu tool bar -->
+         {% include 'components/widgets_tool_menu.html' %}
+    </aside>
+    <section id="dashboard" class="dashboard">
+        {% for widget in widgets %}
+            {% if widget.name == 'Simple Todo List' %}
+                {% include 'components/widgets/simple_todo_list.html' with widget=widget %}
+            {% endif %}
+        {% endfor %}
+
+
+        
+    </section>
+    {% include 'forms/widgets/simple_tl_form.html' %}
+</main>
+<script src="{% static 'components/forms/modalForm.js' %}" defer></script>
+
+{% endblock content %}

@@ -12,4 +12,6 @@ urlpatterns = [
     path("", include("app_authentication.urls")),
     # Dashboard
     path("dashboard/", include("app_dashboards.urls")),
+    # Widgets
+    path("widgets/", include("app_widgets.urls")),
 ]
