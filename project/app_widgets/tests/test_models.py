@@ -35,3 +35,11 @@ class TestTodoList:
         widgets = self.dashboard.widgets.all()
         for widget in widgets:
             print(f"Widget : {widget.id}, {widget.dashboard_id}")
+
+        widget = Dashboard.objects.get_widgets(dashboard=self.dashboard)
+
+        print(f"widget filter :  {widget}")
+
+        widget = Dashboard.objects.get_widget_by_id(widget_id=todo_list.id)
+
+        assert todo_list.name == widget.name

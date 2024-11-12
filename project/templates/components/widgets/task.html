@@ -1,0 +1,10 @@
+<div class="task {% if task.completed %}completed{% else %}pending{% endif %}">
+    <input id="checkox_{{ task.id}}" type="checkbox" class="taskCheckbox" {% if task.completed %}checked{% endif %}>
+    <span class="taskTitle">{{ task.title }}</span>
+    <a class="delete-btn task--delete" data-task-id="{{ task.id }}">X</span>
+</div>
+
+
+{% block script %}
+
+{% endblock script %}

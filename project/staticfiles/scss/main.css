@@ -159,11 +159,12 @@
 .widget {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
   background: #f4f7fc;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 300px;
+  max-height: 400px;
   margin: 20px;
   transition: all 0.3s ease-in-out; }
   .widget:hover {
@@ -184,13 +185,24 @@
     .widget--addTask:hover {
       scale: 1.04;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
-  .widget h3 {
+  .widget--title {
     margin-top: 5px;
-    margin-bottom: 10px;
+    margin-right: 15px;
+    margin-bottom: 15px;
     font-size: 1.6rem;
     color: #333;
     font-weight: 600;
-    text-transform: capitalize; }
+    text-transform: capitalize;
+    /* Styles pour ressembler à un titre */
+    border: none;
+    background-color: transparent;
+    outline: none;
+    width: 100%;
+    cursor: text;
+    padding: 0;
+    /* Effet de survol (facultatif) */ }
+    .widget--title:hover, .widget--title:focus {
+      border-bottom: 1px solid #333; }
   .widget .task {
     display: flex;
     align-items: center;
@@ -210,6 +222,8 @@
       background: #fff3e6; }
       .widget .task.pending .taskCheckbox {
         background-color: #f1c40f; }
+    .widget .task--delete {
+      cursor: pointer; }
     .widget .task .taskCheckbox {
       margin-right: 10px;
       width: 18px;
@@ -236,7 +250,7 @@
   border-radius: 5px;
   width: 100%;
   height: 10px;
-  margin-top: 20px;
+  margin-top: auto;
   overflow: hidden; }
   .progressBar .progress {
     background-color: #4CAF50;
@@ -244,6 +258,51 @@
     width: 50%;
     /* Cette largeur doit être dynamique selon le nombre de tâches complétées */
     border-radius: 5px; }
+
+.task-container {
+  max-height: 100%;
+  /* Limite la hauteur de la container */
+  overflow-y: auto;
+  /* Active le défilement vertical si le contenu dépasse la hauteur */
+  padding-right: 10px; }
+
+.addTask {
+  position: relative;
+  border: 1px dotted #333;
+  display: flex;
+  /* Utilisation de flexbox pour un alignement simple */
+  flex-direction: column;
+  /* Empile les éléments verticalement */
+  width: 100%;
+  max-width: 300px; }
+  .addTask:focus-within .addTask--label {
+    display: none; }
+  .addTask--title {
+    color: #333;
+    font-weight: 400;
+    width: 100%;
+    height: 100%;
+    padding-left: 10px;
+    text-align: center;
+    text-transform: capitalize;
+    /* Styles pour ressembler à un titre */
+    border: none;
+    background-color: transparent;
+    outline: none;
+    width: 100%;
+    cursor: text;
+    padding: 0;
+    /* Effet de survol (facultatif) */ }
+    .addTask--title:hover, .addTask--title:focus {
+      border-bottom: 1px solid #333; }
+  .addTask--label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* Permet de cliquer sur l'input même si le label est dessus */
+    color: gray; }
 
 *,
 *::before,

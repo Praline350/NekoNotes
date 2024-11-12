@@ -1,21 +1,23 @@
-<div class="widget todoList">
+<div class="widget todoList" >
     <div class="widget--header">
-        <input type="text" class="widget--title" value="{{ widget.title }}" title="Click to edit title" />
-        <button class="widget--addTask" title="Add New Task">+</button>
+        <input type="text" class="widget--title" value="{{ widget.title }}" title="Click to edit title"/>
     </div>
-     {% if widget.tasks.all != 0 %}
+    <div class="task-container" id="widget--{{widget.id}}">
+    {% if widget.tasks.all != 0 %}
         {% for task in widget.tasks.all %}
-            <div class="task {% if task.completed %}completed{% else %}pending{% endif %}">
-                <input id="checkox_{{ task.id}}" type="checkbox" class="taskCheckbox" {% if task.completed %}checked{% endif %}>
-                <span class="taskTitle">{{ task.title }}</span>
-            </div>
+            {% include 'components/widgets/task.html' %}
         {% endfor %}
-
     {% endif %}
+    </div>
+    <div class="task addTask">
+        <label class="addTask--label" for="taskTitle">Add task</label>
+        <input type="text" id="taskTitle" class="addTask--title taskTitle" value="" title="Click to edit title" data-widget-id="{{widget.id}}"/>
+    </div>
     <div class="progressBar">
         <div></div>
     </div>
 </div>
+<div id="responseMessage"></div>
 {% block script %}
 <script>
 
@@ -46,34 +48,113 @@
         //UPDATE TITLE 
 
         document.querySelectorAll('.widget--title').forEach(input => {
-        input.addEventListener('blur', function() {
-            const newTitle = this.value; // Récupère la nouvelle valeur du titre
-            console.log('{{widget.id}}')
-            const widgetId = '{{ widget.id }}'; // Si tu as un ID unique pour chaque widget
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {  // Vérifie si la touche pressée est "Entrée"
+                event.preventDefault(); // Empêche le saut de ligne dans le champ d'input (si applicable)
+                const newTitle = this.value;
+                const widgetId = '{{ widget.id }}'; // ID unique pour chaque widget
 
-            // Envoie la nouvelle valeur à Django pour la mettre à jour dans la base de données
-            fetch('{% url "udpate_widget_title" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}' // CSRF token pour sécuriser la requête
-                },
-                body: JSON.stringify({
-                    widget_id: widgetId,
-                    new_title: newTitle
+                // Envoie la nouvelle valeur à Django pour la mettre à jour dans la base de données
+                fetch('{% url "udpate_widget_title" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // CSRF token pour sécuriser la requête
+                    },
+                    body: JSON.stringify({
+                        widget_id: widgetId,
+                        new_title: newTitle
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Titre mis à jour avec succès');
-                } else {
-                    console.error('Erreur lors de la mise à jour du titre');
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Titre mis à jour avec succès');
+                    } else {
+                        console.error('Erreur lors de la mise à jour du titre');
+                    }
+                })
+                .catch(error => console.error('Erreur AJAX :', error));
                 }
-            })
-            .catch(error => console.error('Erreur AJAX :', error));
+            });
         });
-    });
+
+        // ADD TASK
+        document.querySelectorAll('.addTask--title').forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.value === "Add task") {
+                this.value = "";  // Vide l'input
+            }
+            });
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const newTitle = this.value;
+                    const widgetId = input.getAttribute('data-widget-id');
+                    fetch("{% url 'add_task' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            title: newTitle,
+                            widget_id: widgetId
+                        })
+                    })
+                    .then(response => response.json())  
+                    .then(data => {
+                        if (data.task_html) {
+                            console.log('Task added successfully');
+                            document.getElementById('widget--{{widget.id}}').insertAdjacentHTML("beforeend", data.task_html)
+                            attachDeleteEventListeners();
+                            input.value = ''
+                        } else {
+                            console.error('Error adding task');
+                        }
+                    }).catch(error => console.error('AJAX error:', error));
+                }
+            });
+        });
+
+        // DELETE TASK
+
+
+        function attachDeleteEventListeners() {
+            const deleteTaskBtns = document.querySelectorAll(".task--delete");
+            deleteTaskBtns.forEach(function (deleteTaskBtn) {
+                deleteTaskBtn.addEventListener('click', function (event) {
+                    const taskId = deleteTaskBtn.getAttribute('data-task-id');
+                    fetch("{% url 'delete_task' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            task_id: taskId
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            deleteTaskBtn.closest('.task').remove();
+                        } else {
+                            console.error('Erreur lors de la suppression de la tâche');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Une erreur est survenue', error);
+                    });
+                });
+            });
+    }
+
+// Appeler la fonction au chargement de la page pour initialiser les événements sur les tâches existantes
+attachDeleteEventListeners();
+
+
+
+
 
 
 

@@ -53,19 +53,15 @@ class WidgetMaker(View):
             )
 
 
-@csrf_exempt  # Si tu utilises un décorateur CSRF, n'oublie pas de le gérer
+@login_required
 def update_widget_title(request):
     if request.method == "POST":
-
         data = json.loads(request.body)
         print(f"data json : {data}")
         widget_id = data.get("widget_id")
         new_title = data.get("new_title")
-        print(f"widgeti : {widget_id}, title ; {new_title}")
-
         try:
-            dashboard = Dashboard.objects.get(user=request.user)
-            widget = dashboard.widgets.objects.get(id=widget_id)
+            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
             widget.title = new_title
             widget.save()
             return JsonResponse({"success": True})
@@ -73,3 +69,39 @@ def update_widget_title(request):
             return JsonResponse({"success": False, "error": "Widget not found"})
 
     return JsonResponse({"success": False, "error": "Invalid request method"})
+
+
+@login_required
+def add_task(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print(f"data json : {data}")
+        widget_id = data.get("widget_id")
+        title = data.get("title")
+        try:
+            todo_list = SimpleTodoList.objects.get(id=widget_id)
+            task = Task.objects.create(title=title)
+            todo_list.tasks.add(task)
+            task_html = render(
+                request, "components/widgets/task.html", context={"task": task}
+            ).content.decode("utf-8")
+            return JsonResponse({"task_html": task_html})
+        except SimpleTodoList.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "TodoList non trouvée"}, status=404
+            )
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+@login_required
+def delete_task(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        task_id = data.get("task_id")
+        try:
+            task = Task.objects.get(id=task_id)
+            task.delete()
+            return JsonResponse({"message": "Tâche supprimée avec succès"}, status=200)
+        except Task.DoesNotExist:
+            return JsonResponse({"error": "Tâche non trouvée"}, status=404)
