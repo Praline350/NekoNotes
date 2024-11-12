@@ -24,3 +24,14 @@ class TestTodoList:
         assert todo_list.name == title
         assert todo_list.dashboard.user == self.user
         assert todo_list.tasks.count() == 1
+
+    def test_select_widget(self):
+        title = "My todo list"
+        todo_list = SimpleTodoList.objects.create(dashboard=self.dashboard, name=title)
+        todo_list.tasks.add(self.task1)
+
+        assert todo_list.name == title
+
+        widgets = self.dashboard.widgets.all()
+        for widget in widgets:
+            print(f"Widget : {widget.id}, {widget.dashboard_id}")
