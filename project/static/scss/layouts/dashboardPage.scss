@@ -15,16 +15,23 @@
 
 
 #dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
     background-color: $dashboard_background;
     margin-top: $m_1;
     padding: $p_1;
-    width: 200vh;
-    height: 100vh;
+    width: 170vh;
+    height: 80vh;
+    max-width: 100%; /* Largeur maximale du dashboard */
+    max-height: 100%; /* Hauteur maximale du dashboard */
+    border: 1px solid #ccc;
+
+    /* Permettre le défilement à l'intérieur */
+    overflow: auto; /* Si le contenu dépasse la taille du dashboard, il sera possible de défiler */
 }
 
-#dashboard {
-    border: 1px solid #ccc;
-}
+
 
 
 

@@ -12,6 +12,9 @@
     {% compress css %}
     <link rel="stylesheet" href="{% sass_src 'scss/main.scss' %}">
     {% endcompress %}
+    {% if user.is_authenticated %}
+    <link rel="stylesheet" href="{% static 'css/users_settings/users/' %}{{ user.id }}.css">
+    {% endif %}
     <title>{% block title %}NekoNotes{% endblock title %}</title>
 </head>
 <body >
