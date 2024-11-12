@@ -4,5 +4,6 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path("add_widget/", WidgetMaker.as_view(), name="add_widget"),
+    path("add-widget/", WidgetMaker.as_view(), name="add_widget"),
+    path("update-title/", update_widget_title, name="udpate_widget_title"),
 ]

@@ -1,6 +1,6 @@
 <div class="widget todoList">
     <div class="widget--header">
-        <h3>{{ widget.title }}</h3>
+        <input type="text" class="widget--title" value="{{ widget.title }}" title="Click to edit title" />
         <button class="widget--addTask" title="Add New Task">+</button>
     </div>
      {% if widget.tasks.all != 0 %}
@@ -18,6 +18,9 @@
 </div>
 {% block script %}
 <script>
+
+    // CHANGE TASK CLASS CSS
+
     document.addEventListener("DOMContentLoaded", function(){
         const checkboxs = document.querySelectorAll('.taskCheckbox');
 
@@ -40,8 +43,41 @@
             })
         })
 
+        //UPDATE TITLE 
 
-    })
+        document.querySelectorAll('.widget--title').forEach(input => {
+        input.addEventListener('blur', function() {
+            const newTitle = this.value; // Récupère la nouvelle valeur du titre
+            console.log('{{widget.id}}')
+            const widgetId = '{{ widget.id }}'; // Si tu as un ID unique pour chaque widget
+
+            // Envoie la nouvelle valeur à Django pour la mettre à jour dans la base de données
+            fetch('{% url "udpate_widget_title" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}' // CSRF token pour sécuriser la requête
+                },
+                body: JSON.stringify({
+                    widget_id: widgetId,
+                    new_title: newTitle
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Titre mis à jour avec succès');
+                } else {
+                    console.error('Erreur lors de la mise à jour du titre');
+                }
+            })
+            .catch(error => console.error('Erreur AJAX :', error));
+        });
+    });
+
+
+
+})
 
 </script>
 {% endblock script %}

@@ -51,3 +51,25 @@ class WidgetMaker(View):
             return JsonResponse(
                 {"error": "Dashboard not found for the user"}, status=404
             )
+
+
+@csrf_exempt  # Si tu utilises un décorateur CSRF, n'oublie pas de le gérer
+def update_widget_title(request):
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+        print(f"data json : {data}")
+        widget_id = data.get("widget_id")
+        new_title = data.get("new_title")
+        print(f"widgeti : {widget_id}, title ; {new_title}")
+
+        try:
+            dashboard = Dashboard.objects.get(user=request.user)
+            widget = dashboard.widgets.objects.get(id=widget_id)
+            widget.title = new_title
+            widget.save()
+            return JsonResponse({"success": True})
+        except Widget.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Widget not found"})
+
+    return JsonResponse({"success": False, "error": "Invalid request method"})
