@@ -3,4 +3,4 @@ venv/
 pyproject.toml
 __pycache__/
 .coverage
-/staticfiles/
+staticfiles/
