@@ -18,8 +18,10 @@
 
         
     </section>
-    {% include 'forms/widgets/simple_tl_form.html' %}
 </main>
-<script src="{% static 'components/forms/modalForm.js' %}" defer></script>
+
 
 {% endblock content %}
+{% block script %}
+<script src="{% static 'js/components/modalForm.js' %}" defer></script>
+{%  endblock script %}

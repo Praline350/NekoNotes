@@ -1,16 +1,16 @@
 
 // Buttons
-@import '../components/buttons/buttons.scss';
+@import 'components/buttons.scss';
 
 
 // Forms
-@import '../components/forms/authenticationForms.scss';
-@import '../components/forms/modalForm.scss';
+@import 'components/authenticationForms.scss';
+@import 'components/modalForm.scss';
 
 // nav
-@import '../components/dashboard/toolBarMenu.scss';
+@import 'components/toolBarMenu.scss';
 
 
 // widgets
 
-@import '../components/simpleTodoList/simpleTodoList.scss';
+@import 'components/simpleTodoList.scss';

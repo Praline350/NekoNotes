@@ -16,7 +16,7 @@
         <div></div>
     </div>
 </div>
-
+{% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function(){
         const checkboxs = document.querySelectorAll('.taskCheckbox');
@@ -44,3 +44,4 @@
     })
 
 </script>
+{% endblock script %}

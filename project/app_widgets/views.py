@@ -15,25 +15,39 @@ from .models import *
 from .forms import *
 
 
-@csrf_exempt  # Désactive temporairement CSRF pour simplifier le test, mais pas recommandé pour la production
-def add_simple_todo_list(request):
-    if request.method == "POST":
-        print("Données brutes reçues :", request.body)
-        try:
+@method_decorator(login_required, name="dispatch")
+class WidgetMaker(View):
+
+    def post(self, request):
+        if request.method == "POST":
             data = json.loads(request.body)
-            print(data)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format"}, status=400)
-        title = data.get("title")
+            widget_name = data.get("widget_name")
+            print(widget_name)
+            widget_html = self.create_widget(request, widget_name)
+            if widget_html:
+                return JsonResponse({"widget_html": widget_html})
+            else:
+                return JsonResponse({"error": "Widget not found"}, status=404)
 
-        if not title:
-            return JsonResponse({"error": "title is required"}, status=400)
+    def create_widget(self, request, widget_name):
+        match widget_name:
+            case "Simple Todo List":
+                return self.create_simple_todo_list(request)
+            case _:
+                return None
 
+    def create_simple_todo_list(self, request):
+        print("creat simple list")
         dashboard = Dashboard.objects.filter(user=request.user).first()
         if dashboard:
-            todo_list = SimpleTodoList(title=title, dashboard=dashboard)
-            todo_list.save()
-            return JsonResponse({"message": "Simple TodoList created successfully"})
+            widget = SimpleTodoList.objects.create(dashboard=dashboard)
+            widget_html = render(
+                request,
+                "components/widgets/simple_todo_list.html",
+                {"widget": widget},
+            ).content.decode("utf-8")
+            return widget_html
         else:
-            return JsonResponse({"error": "No dashboard found"}, status=400)
-    return JsonResponse({"error": "Invalid request method"}, status=400)
+            return JsonResponse(
+                {"error": "Dashboard not found for the user"}, status=404
+            )
