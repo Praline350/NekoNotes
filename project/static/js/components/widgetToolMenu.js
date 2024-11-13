@@ -104,6 +104,7 @@ export default class WidgetToolMenu {
     initializeNewWidget(widgetHtml) {
         // Initialise le nouveau widget avec la classe TodoWidget
         const newWidget = this.dashboard.lastElementChild;
+        this.fadeIn(newWidget)
         console.log(newWidget)
         if (newWidget) {
             new TodoWidget(newWidget);
@@ -128,6 +129,15 @@ export default class WidgetToolMenu {
                 notification.remove();
             });
         }, 2000);
+    }
+    fadeIn(element, duration = 300) {
+        element.style.opacity = 0;
+        element.style.transition = `opacity ${duration}ms ease-in-out`;
+        
+        // Pour déclencher la transition, attendre un instant et passer à l'opacité 1
+        setTimeout(() => {
+            element.style.opacity = 1;
+        }, 10); // Le délai de 10ms est juste pour que la transition prenne effet après avoir modifié l'opacité
     }
 }
 

@@ -3,7 +3,9 @@
 
 // Simple Todo List
 
-
+.widget.hidden {
+    opacity: 0; /* Rend le widget invisible */
+}
 
 .widget {
     flex: 1 1 calc(30% - 10px);
@@ -16,7 +18,8 @@
     width: 300px;
     height: 400px;
     margin: 20px;
-    transition: height 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out; 
+    opacity: 1;
     &--todoList {
         width: 30%;
         max-height: 600px;
