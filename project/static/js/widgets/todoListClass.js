@@ -18,7 +18,7 @@ export default class TodoWidget {
         this.taskContainer = this.widget.querySelector('.task-container');
         this.titleInput = this.widget.querySelector('.widget--title');
         this.addTaskInput = this.widget.querySelector('.addTask--title');
-        this.progressBar = this.widget.querySelector('.progressBar div');
+        this.progressBar = this.widget.querySelector('.progress');
         this.csrfToken = this.widget.querySelector('[name=csrfmiddlewaretoken]').value;
 
         // Vérifie que tous les éléments nécessaires sont présents
@@ -126,11 +126,39 @@ export default class TodoWidget {
     handleTaskStatus(event) {
         const taskDiv = event.target.parentElement;
         if (!taskDiv) return;
-
+        console.log(this.progressBar)
+        this.progressBar.classList.remove('progress--start')
         const isCompleted = event.target.checked;
+        const taskId = taskDiv.dataset.taskId
+        const taskTitle = taskDiv.querySelector('.taskTitle').textContent.trim();
+        console.log(taskId)
+        console.log(isCompleted)
         taskDiv.classList.toggle('completed', isCompleted);
         taskDiv.classList.toggle('pending', !isCompleted);
-        
+
+
+        try {
+            fetch('http://127.0.0.1:8000/widgets/task/update/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.csrfToken
+                },
+                body :JSON.stringify({
+                    task_id : taskId,
+                    title: taskTitle,
+                    status : isCompleted
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Erreur lors de la mise à jour de la tâche');
+                }
+            }).catch(error => console.error('Erreur AJAX:', error));
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de la requête:', error);
+        }
         this.updateProgressBar();
     }
 

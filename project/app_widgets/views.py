@@ -95,6 +95,25 @@ def add_task(request):
 
 
 @login_required
+def update_task(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        task_id = data.get("task_id")
+        title = data.get("title")
+        status = data.get("status")
+        try:
+            task = Task.objects.get(id=task_id)
+            task.title = title
+            task.completed = status
+            task.save()
+            print(f"task save {task.completed}")
+            return JsonResponse({"success": True})
+        except Task.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Task not found"})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
+
+
+@login_required
 def delete_task(request):
     if request.method == "POST":
         data = json.loads(request.body)
