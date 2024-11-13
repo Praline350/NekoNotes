@@ -1,54 +1,21 @@
 <!-- Menu déroulant présent dans le tool menu Bar -->
 
-<ul class="menu">
-    <li><a href="#">Widgets</a>
-        <ul>
-            <li><a href="#">Simple Todo List</a></li>
-            <li><a href="#">Développement</a></li>
-        </ul>
-    </li>
-    <li><a href="#">À propos</a></li>
-    <li><a href="#">Contact</a></li>
-</ul>
+<div class="menu-container">
+    <ul class="menu">
+        <li>
+            <a href="#" class="menu-item">Widgets</a>
+            <ul class="submenu">
+                <li><a href="#" class="widget-link">Simple Todo List</a></li>
+                <li><a href="#" class="widget-link">Développement</a></li>
+            </ul>
+        </li>
+        <li><a href="#" class="menu-item">À propos</a></li>
+        <li><a href="#" class="menu-item">Contact</a></li>
+    </ul>
+</div>
+
+<!-- Ajouter le token CSRF une seule fois en haut de la page -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
 {% block script %}
-
-<script>
-
-
-        document.querySelectorAll(".menu a").forEach(item => {
-        item.addEventListener("click", function(event) {
-            event.preventDefault(); // Empêche la navigation par défaut
-
-            const widgetName = this.textContent.trim();  // Récupère le nom du widget
-            console.log("Nom du widget:", widgetName);
-            console.log("Début de l'appel AJAX");
-            // Envoie le nom du widget via AJAX
-            fetch("{% url 'add_widget' %}", {
-                method: "POST",
-                body: JSON.stringify({ widget_name: widgetName }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                }
-            })
-            
-            .then(response => {
-                console.log("Réponse reçue", response);
-                return response.json();
-            })
-            .then(data => {
-                console.log(data)
-                if (data.widget_html) {
-                    document.getElementById("dashboard").insertAdjacentHTML("beforeend", data.widget_html);
-                } else if (data.error) {
-                    console.error("Erreur :", data.error);
-                }
-            })
-            .catch(error => console.error("Erreur AJAX :", error));
-        });
-    });
-
-
-</script>
 {% endblock script %}

@@ -1,59 +1,57 @@
 @import '../variables.scss';
 
 
+.menu ul {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+    display: none;
+}
+
+.error-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ff4444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
 .menu {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu > li {
     position: relative;
-    display: inline-block;
-    margin-right: 15px;
 }
 
-.menu > li > a {
-    text-decoration: none;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    display: block;
-    position: relative; /* Assure que le sous-menu s'affiche au-dessus */
-    z-index: 1;
-}
-
-/* Style du sous-menu */
-.menu li ul {
-    display: none;
-    position: absolute;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    background-color: #444;
-    top: 100%; /* Positionne le sous-menu sous l'élément parent */
+.menu ul {
+    
+    top: 100%;
     left: 0;
-    z-index: 10; /* Plus élevé que le menu de base */
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    min-width: 150px;
 }
 
-/* Style des éléments du sous-menu */
-.menu li ul li {
-    width: 150px;
-}
-
-.menu li ul li a {
-    padding: 10px;
-    color: #fff;
-    text-decoration: none;
+.menu-item {
+    padding: 10px 15px;
     display: block;
 }
 
-.menu li ul li a:hover {
-    background-color: #555;
+.widget-link {
+    padding: 8px 15px;
+    display: block;
 }
 
-/* Affiche le sous-menu au survol */
-.menu li:hover ul {
-    display: block;
+.widget-link:hover {
+    background: #f5f5f5;
 }

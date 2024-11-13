@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+
     <link href="{% static 'css/style.css' %}" rel="'stylesheet">
     {% compress css %}
     <link rel="stylesheet" href="{% sass_src 'scss/main.scss' %}">
@@ -15,6 +16,8 @@
     {% if user.is_authenticated %}
     <link rel="stylesheet" href="{% static 'css/users_settings/users/' %}{{ user.id }}.css">
     {% endif %}
+
+    <script src="{% static 'js/main.js' %}" type="module" defer></script>
     <title>{% block title %}NekoNotes{% endblock title %}</title>
 </head>
 <body >
