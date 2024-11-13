@@ -1,6 +1,11 @@
 <div class="widget widget--todoList todoList" data-widget-id="{{widget.id}}">
     <div class="widget--header">
-        <input type="text" class="widget--title" value="{{ widget.title }}" title="Click to edit title"/>
+        <input type="text" 
+                class="widget--title" 
+                value="{% if widget.title != 'Simple Todo List' %}{{ widget.title }}{% endif %}" 
+                placeholder="Your list title" 
+                title="Click to edit title"/>
+        <button class="widget--delete" >X</button>
     </div>
     <div class="task-container">
         {% if widget.tasks.all != 0 %}

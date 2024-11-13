@@ -8,14 +8,25 @@ export default class TodoWidget {
             throw new Error('Widget ID non trouvé');
         }
         
+        this.handleTitleUpdate = this.debounce(this.handleTitleUpdate.bind(this), 500); // 500ms de délai
+        this.currentTitle = "";  // Valeur initiale pour le titre actuel
+        
         // Vérification que les éléments nécessaires existent
         this.initializeElements();
         this.initializeEventListeners();
         this.updateProgressBar();
     }
+    debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
 
     initializeElements() {
         this.taskContainer = this.widget.querySelector('.task-container');
+        this.widgetHeader = this.widget.querySelector('.widget--header')
         this.titleInput = this.widget.querySelector('.widget--title');
         this.addTaskInput = this.widget.querySelector('.addTask--title');
         this.progressBar = this.widget.querySelector('.progress');
@@ -32,7 +43,7 @@ export default class TodoWidget {
     initializeEventListeners() {
         // Gestion du titre
         this.titleInput.addEventListener('keydown', (event) => this.handleTitleUpdate(event));
-        this.titleInput.addEventListener('blur', (event) => this.handleTitleUpdate(event));
+        // this.titleInput.addEventListener('blur', (event) => this.handleTitleUpdate(event));
         
         // Gestion de l'ajout de tâche
         this.addTaskInput.addEventListener('focus', () => this.handleTaskInputFocus());
@@ -45,12 +56,23 @@ export default class TodoWidget {
         this.initializeDeleteBtns();
         this.initializeUpdateTask();
 
+        // Gestion delete du Widget
+        this.initializeWidgetDeleteBtns();
+
+
     }
 
     initializeCheckboxes() {
         const checkboxes = this.widget.querySelectorAll('.taskCheckbox');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('click', (event) => this.handleTaskStatus(event));
+        });
+    }
+
+    initializeWidgetDeleteBtns(){
+        const deleteBtns = this.widget.querySelectorAll('.widget--delete');
+        deleteBtns.forEach(deleteBtn => {
+            deleteBtn.addEventListener('click', (event) => this.deleteWidget(this.widgetId));
         });
     }
 
@@ -67,7 +89,7 @@ export default class TodoWidget {
             // Lors de l'appui sur "Enter"
             taskTitle.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
-                    this.handleTaskStatus(event);
+                    this.handleTaskTitle(event);
                     event.target.blur();
                 }
             });
@@ -79,6 +101,7 @@ export default class TodoWidget {
         
         event.preventDefault();
         const newTitle = this.titleInput.value;
+        console.log(newTitle)
 
         if (newTitle === this.currentTitle) return;
         if (event.type === 'keydown' && event.key === 'Enter') {
@@ -103,6 +126,8 @@ export default class TodoWidget {
 
                 console.error('Erreur lors de la mise à jour du titre');
             } else {
+                console.log(this.widgetHeader)
+                this.showMessage("Titre Update !", this.widgetHeader)
                 this.currentTitle = newTitle;
             }
         } catch (error) {
@@ -119,8 +144,10 @@ export default class TodoWidget {
     async handleNewTask(event) {
         if (event.key !== 'Enter') return;
         
-        event.preventDefault();
+        
+        // event.preventDefault();
         const newTitle = this.addTaskInput.value; 
+        if (newTitle.trim() === "") return
         if (event.type === 'keydown' && event.key === 'Enter') {
             this.addTaskInput.blur();
         }
@@ -142,10 +169,10 @@ export default class TodoWidget {
             if (data.task_html) {
                 this.taskContainer.insertAdjacentHTML('beforeend', data.task_html);
                 this.addTaskInput.value = '';
-                // Réinitialiser les écouteurs d'événements pour la nouvelle tâche
                 this.initializeCheckboxes();
                 this.initializeDeleteBtns();
-                this.updateProgressBar();
+                this.initializeUpdateTask();
+                // this.showMessage("New task added !", this.widgetHeader)
             }
         } catch (error) {
             console.error('AJAX error:', error);
@@ -158,15 +185,15 @@ export default class TodoWidget {
         this.progressBar.classList.remove('progress--start')
         const isCompleted = event.target.checked;
         const taskId = taskDiv.dataset.taskId
-        const taskTitle = event.target.value;
-        console.log(taskTitle)
+        console.log(isCompleted)
+        
 
         taskDiv.classList.toggle('completed', isCompleted);
         taskDiv.classList.toggle('pending', !isCompleted);
 
 
         try {
-            fetch('http://127.0.0.1:8000/widgets/task/update/', {
+            fetch('http://127.0.0.1:8000/widgets/task/update-status/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,7 +201,6 @@ export default class TodoWidget {
                 },
                 body :JSON.stringify({
                     task_id : taskId,
-                    title: taskTitle,
                     status : isCompleted
                 })
             })
@@ -188,6 +214,40 @@ export default class TodoWidget {
             console.error('Erreur lors de l\'envoi de la requête:', error);
         }
         this.updateProgressBar();
+    }
+    
+    handleTaskTitle(event){
+        const taskDiv = event.target.closest('.task');
+        const taskTitle = taskDiv.querySelector('.task--input').value;
+        const taskId = taskDiv.dataset.taskId
+        console.log(taskTitle)
+        console.log(taskDiv)
+        if (taskTitle === this.currentTitle) return;
+        try {
+            fetch('http://127.0.0.1:8000/widgets/task/update-title/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.csrfToken
+                },
+                body :JSON.stringify({
+                    task_id : taskId,
+                    title: taskTitle,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    
+                    console.error('Erreur lors de la mise à jour de la tâche');
+                }else{
+                    this.currentTitle = taskTitle;
+                }
+            }).catch(error => console.error('Erreur AJAX:', error));
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de la requête:', error);
+        }
+
     }
     deleteTask(event) {
         const taskDiv = event.target.closest('.task');
@@ -208,6 +268,7 @@ export default class TodoWidget {
             .then(data => {
                 if (data.success) {
                     taskDiv.remove();
+                    this.showMessage('Task deleted', this.widgetHeader)
                 } else {
                     console.error('Erreur lors de la suppression de la tâche');
                 }
@@ -217,6 +278,35 @@ export default class TodoWidget {
         }
 
     }
+    deleteWidget(widgetId) {
+        // Envoie une requête POST pour supprimer le widget
+        fetch("http://127.0.0.1:8000/widgets/delete-widget/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': this.csrfToken  // CSRF token pour la sécurité
+            },
+            body: JSON.stringify({
+                widget_id: widgetId  // ID du widget à supprimer
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const widgetDiv = document.querySelector(`[data-widget-id="${widgetId}"]`);
+                if (widgetDiv) {
+                    widgetDiv.remove(); 
+                    this.showMessage('Widget deleted', this.widgetHeader)
+                }
+            } else {
+                console.error("Erreur lors de la suppression du widget");
+            }
+        })
+        .catch(error => {
+            console.error("Erreur AJAX:", error);
+        });
+    }
+    
 
     updateProgressBar() {
         const tasks = this.taskContainer.querySelectorAll('.task');
@@ -229,6 +319,24 @@ export default class TodoWidget {
         
         const percentage = (completedTasks.length / tasks.length) * 100;
         this.progressBar.style.width = `${percentage}%`;
+    }
+    showMessage(message, parentElement) {
+        // Création d'une notification d'erreur
+        console.log(message)
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+
+        parentElement.appendChild(notification);
+        
+
+        // Supprime la notification après 3 secondes
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in forwards';
+            notification.addEventListener('animationend', () => {
+                notification.remove();
+            });
+        }, 2000);
     }
 }
 

@@ -95,18 +95,31 @@ def add_task(request):
 
 
 @login_required
-def update_task(request):
+def update_task_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        task_id = data.get("task_id")
+        status = data.get("status")
+        try:
+            task = Task.objects.get(id=task_id)
+            task.completed = status
+            task.save()
+            return JsonResponse({"success": True})
+        except Task.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Task not found"})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
+
+
+@login_required
+def update_task_title(request):
     if request.method == "POST":
         data = json.loads(request.body)
         task_id = data.get("task_id")
         title = data.get("title")
-        status = data.get("status")
         try:
             task = Task.objects.get(id=task_id)
             task.title = title
-            task.completed = status
             task.save()
-            print(f"task save {task.completed}")
             return JsonResponse({"success": True})
         except Task.DoesNotExist:
             return JsonResponse({"success": False, "error": "Task not found"})
@@ -124,3 +137,19 @@ def delete_task(request):
             return JsonResponse({"success": True})
         except Task.DoesNotExist:
             return JsonResponse({"success": False, "error": "Task not found"})
+
+
+@login_required
+def delete_widget(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        widget_id = data.get("widget_id")
+        try:
+            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
+            if widget:
+                widget.delete()
+                return JsonResponse({"success": True})
+            else:
+                return JsonResponse({"success": False, "error": "widget not found"})
+        except Dashboard.DoesNotExist:
+            return JsonResponse({"success": False, "error": "dashboard not found"})

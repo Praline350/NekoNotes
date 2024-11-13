@@ -40,12 +40,20 @@ video {
 
 
 .navBar {
+    background-color: $bg_primary_color;
     display: flex;
     flex-direction: row;
     max-height: 100px;
     padding-top: 10px;
+    padding-bottom: $p_1;
     align-items: center;
     justify-content: space-between;
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    &--shadow {
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
     &--iconTitle{
         justify-self: left;
         padding-left: 50px;

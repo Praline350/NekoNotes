@@ -91,11 +91,12 @@ export default class WidgetToolMenu {
                 // Ajoute le widget et initialise ses fonctionnalités
                 this.dashboard.insertAdjacentHTML('beforeend', data.widget_html);
                 this.initializeNewWidget(data.widget_html);
+                this.showMessage("New Widget Added ! ");
             } else if (data.error) {
-                this.showError(data.error);
+                
             }
         } catch (error) {
-            this.showError('Erreur lors de l\'ajout du widget');
+            this.showMessage('Erreur lors de l\'ajout du widget');
             console.error('Erreur AJAX:', error);
         }
     }
@@ -109,18 +110,24 @@ export default class WidgetToolMenu {
         }
     }
 
-    showError(message) {
+    showMessage(message) {
         // Création d'une notification d'erreur
+        console.log(message)
         const notification = document.createElement('div');
-        notification.className = 'error-notification';
+        notification.className = 'notification';
+        notification.classList.add('notification--menu')
         notification.textContent = message;
 
         document.body.appendChild(notification);
+        
 
         // Supprime la notification après 3 secondes
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            notification.style.animation = 'slideOut 0.3s ease-in forwards';
+            notification.addEventListener('animationend', () => {
+                notification.remove();
+            });
+        }, 2000);
     }
 }
 

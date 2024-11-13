@@ -20,9 +20,9 @@
     <script src="{% static 'js/main.js' %}" type="module" defer></script>
     <title>{% block title %}NekoNotes{% endblock title %}</title>
 </head>
-<body >
+<body  class="cloudBackground">
     <header class="header">
-        <nav class="navBar">
+        <nav class="navBar navBar--shadow">
             <div class="navBar navBar--iconTitle">
                 <img class="mainIcon" src="{% static 'images/icons/logo_transparent.png' %}"  al="logo">
                 <a href="{% url 'welcome' %}" class="title title--navbar">Nekonotes</a>
