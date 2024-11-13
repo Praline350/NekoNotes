@@ -1,4 +1,4 @@
-<div class="widget todoList" data-widget-id="{{widget.id}}">
+<div class="widget widget--todoList todoList" data-widget-id="{{widget.id}}">
     <div class="widget--header">
         <input type="text" class="widget--title" value="{{ widget.title }}" title="Click to edit title"/>
     </div>
@@ -9,7 +9,7 @@
             {% endfor %}
         {% endif %}
     </div>
-    <div class="task addTask">
+    <div class="addTask--container addTask">
         <label class="addTask--label" for="taskTitle-{{widget.id}}">Add task</label>
         <input type="text" 
                id="taskTitle-{{widget.id}}" 

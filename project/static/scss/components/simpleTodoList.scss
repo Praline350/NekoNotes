@@ -6,6 +6,7 @@
 
 
 .widget {
+    flex: 1 1 calc(30% - 10px);
     display: flex;
     flex-direction: column;
     padding: $p_1;
@@ -13,9 +14,15 @@
     background: $bg_white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 300px;
-    max-height: 400px;
+    height: 400px;
     margin: 20px;
-    transition: all 0.3s ease-in-out;
+    transition: height 0.3s ease-in-out;
+    &--todoList {
+        width: 30%;
+        max-height: 600px;
+        max-width: 30%;
+
+    }
     
     &:hover {
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.50);
@@ -72,6 +79,9 @@
         margin-bottom: 10px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         transition: background-color 0.3s;
+        &--input{
+            
+        }
 
         &.completed {
             background: #e0ffe0;
@@ -90,13 +100,25 @@
             }
         }
         &--delete {
+            text-align: center;
+            margin-bottom: 5px;
+            background: none;
+            border: none;
+            height: 10px;
+            color: grey;
             cursor: pointer;
+            margin-left: 10px;
+            &:hover {
+                color: darkred;
+            }
         }
 
         .taskCheckbox {
             margin-right: 10px;
             width: 18px;
             height: 18px;
+            max-width: 18px;
+            max-height: 18px;
             border-radius: 50%;
             appearance: none;
             background-color: #ddd;
@@ -115,6 +137,7 @@
             font-size: 1rem;
             flex-grow: 1;
             color: inherit;
+            width: 90%;
         }
 
         .taskStatus {
@@ -159,6 +182,17 @@
     flex-direction: column; /* Empile les éléments verticalement */
     width: 100%;
     max-width: 300px;
+    &--container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        background: #fff;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: background-color 0.3s;
+    }
 
     &:focus-within .addTask--label {
         display: none;
@@ -198,4 +232,14 @@
     }
 }
 
+.input {
+    border: none;           // Enlève la bordure
+    background-color: transparent; // Enlève le fond
+    outline: none;           // Enlève l'outline lors de la sélection
+    cursor: text;            // Affiche le curseur "texte" pour indiquer que c'est éditable
+    padding: 0;             // Enlève le padding interne
+    &:hover, &:focus {
+        border-bottom: 1px solid $font_black; // Petite bordure en bas pour indiquer que c'est éditable
+    }
+}
 

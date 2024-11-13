@@ -1,6 +1,7 @@
 <div class="task {% if task.completed %}completed{% else %}pending{% endif %}" data-task-id="{{task.id}}">
     <input id="checkox_{{ task.id}}" type="checkbox" class="taskCheckbox" {% if task.completed %}checked{% endif %}>
-    <span class="taskTitle">{{ task.title }}</span>
+    <input class="taskTitle task--input input " value="{{ task.title }}"/>
+    <button class="task--delete" >X</button>
 </div>
 
 

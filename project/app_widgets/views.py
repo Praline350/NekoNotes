@@ -121,6 +121,6 @@ def delete_task(request):
         try:
             task = Task.objects.get(id=task_id)
             task.delete()
-            return JsonResponse({"message": "Tâche supprimée avec succès"}, status=200)
+            return JsonResponse({"success": True})
         except Task.DoesNotExist:
-            return JsonResponse({"error": "Tâche non trouvée"}, status=404)
+            return JsonResponse({"success": False, "error": "Task not found"})
