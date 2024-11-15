@@ -8,26 +8,44 @@
 }
 
 .widget {
-    flex: 1 1 calc(30% - 10px);
+    // flex: 1 1 calc(30% - 10px);
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     padding: $p_1;
     border-radius: 10px;
     background: $bg_white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 200px; 
+    max-width: 400px; 
+    min-height: 150px; 
+    max-height: 500px;
     width: 300px;
-    height: 400px;
+    height: auto;
     margin: 20px;
     transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out; 
+    transition: all 0.3s ease-in-out;
     opacity: 1;
+
+
+    /* Rendre le contenu flexible en hauteur */
+    flex-grow: 0; /* Permet au widget de grandir selon l'espace disponible */
+    flex-shrink: 0; /* Permet au widget de se réduire si l'espace est limité */
+    flex-basis: auto; /* Largeur par défaut du widget */
+
+
     &--todoList {
         width: 30%;
-        max-height: 600px;
+        height: auto;
+        min-height: 400px;
+        max-height: 500px;
+        min-width: 300px;
         max-width: 30%;
 
     }
     
     &:hover {
+        transition: all 0.3s ease-in-out;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.50);
     }
     &--header{

@@ -29,6 +29,19 @@ class WidgetMaker(View):
             else:
                 return JsonResponse({"error": "Widget not found"}, status=404)
 
+    def delete(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        widget_id = data.get("widget_id")
+        try:
+            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
+            if widget:
+                widget.delete()
+                return JsonResponse({"success": True})
+            else:
+                return JsonResponse({"success": False, "error": "widget not found"})
+        except Dashboard.DoesNotExist:
+            return JsonResponse({"success": False, "error": "dashboard not found"})
+
     def create_widget(self, request, widget_name):
         match widget_name:
             case "Simple Todo List":
@@ -53,9 +66,8 @@ class WidgetMaker(View):
             )
 
 
-@login_required
-def update_widget_title(request):
-    if request.method == "POST":
+class SimpleTodoWidget(View):
+    def put(self, request, *args, **kwargs):
         data = json.loads(request.body)
         print(f"data json : {data}")
         widget_id = data.get("widget_id")
@@ -68,12 +80,11 @@ def update_widget_title(request):
         except Widget.DoesNotExist:
             return JsonResponse({"success": False, "error": "Widget not found"})
 
-    return JsonResponse({"success": False, "error": "Invalid request method"})
 
+@method_decorator(login_required, name="dispatch")
+class TaskView(View):
 
-@login_required
-def add_task(request):
-    if request.method == "POST":
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         print(f"data json : {data}")
         widget_id = data.get("widget_id")
@@ -93,63 +104,58 @@ def add_task(request):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-
-@login_required
-def update_task_status(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        task_id = data.get("task_id")
-        status = data.get("status")
+    def put(self, request, *args, **kwargs):
+        """
+        Handle task updates (HTTP PUT for updating title or status).
+        """
         try:
+            data = json.loads(request.body)
+            task_id = data.get("task_id")
+
+            if not task_id:
+                return JsonResponse(
+                    {"success": False, "error": "Missing task_id"}, status=400
+                )
+
             task = Task.objects.get(id=task_id)
-            task.completed = status
+
+            # Dispatcher: update title or status
+            if "title" in data:
+                task.title = data["title"]
+            elif "status" in data:
+                task.completed = data["status"]
+            else:
+                return JsonResponse(
+                    {"success": False, "error": "Missing title or status"}, status=400
+                )
+
             task.save()
             return JsonResponse({"success": True})
+
         except Task.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Task not found"})
-    return JsonResponse({"success": False, "error": "Invalid request method"})
+            return JsonResponse(
+                {"success": False, "error": "Task not found"}, status=404
+            )
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-
-@login_required
-def update_task_title(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        task_id = data.get("task_id")
-        title = data.get("title")
+    def delete(self, request, *args, **kwargs):
+        """
+        Handle task deletion (HTTP DELETE).
+        """
         try:
-            task = Task.objects.get(id=task_id)
-            task.title = title
-            task.save()
-            return JsonResponse({"success": True})
-        except Task.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Task not found"})
-    return JsonResponse({"success": False, "error": "Invalid request method"})
+            data = json.loads(request.body)
+            task_id = data.get("task_id")
 
+            if not task_id:
+                return JsonResponse({"success": False, "error": "Missing task_id"})
 
-@login_required
-def delete_task(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        task_id = data.get("task_id")
-        try:
             task = Task.objects.get(id=task_id)
             task.delete()
             return JsonResponse({"success": True})
         except Task.DoesNotExist:
             return JsonResponse({"success": False, "error": "Task not found"})
-
-
-@login_required
-def delete_widget(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        widget_id = data.get("widget_id")
-        try:
-            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
-            if widget:
-                widget.delete()
-                return JsonResponse({"success": True})
-            else:
-                return JsonResponse({"success": False, "error": "widget not found"})
-        except Dashboard.DoesNotExist:
-            return JsonResponse({"success": False, "error": "dashboard not found"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Invalid JSON"})

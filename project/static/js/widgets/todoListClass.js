@@ -109,8 +109,8 @@ export default class TodoWidget {
         }
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/widgets/update-title/", {
-                method: 'POST',
+            const response = await fetch("http://127.0.0.1:8000/widgets/simple-todo/", {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.csrfToken
@@ -147,13 +147,14 @@ export default class TodoWidget {
         
         // event.preventDefault();
         const newTitle = this.addTaskInput.value; 
+        this.progressBar.classList.remove('progress--start')
         if (newTitle.trim() === "") return
-        if (event.type === 'keydown' && event.key === 'Enter') {
-            this.addTaskInput.blur();
-        }
+        // if (event.type === 'keydown' && event.key === 'Enter') {
+        //     this.addTaskInput.blur();
+        // }
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/widgets/add-task/", {
+            const response = await fetch("http://127.0.0.1:8000/widgets/task/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,6 +170,7 @@ export default class TodoWidget {
             if (data.task_html) {
                 this.taskContainer.insertAdjacentHTML('beforeend', data.task_html);
                 this.addTaskInput.value = '';
+                this.updateProgressBar();
                 this.initializeCheckboxes();
                 this.initializeDeleteBtns();
                 this.initializeUpdateTask();
@@ -193,8 +195,8 @@ export default class TodoWidget {
 
 
         try {
-            fetch('http://127.0.0.1:8000/widgets/task/update-status/', {
-                method: 'POST',
+            fetch('http://127.0.0.1:8000/widgets/task/', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.csrfToken
@@ -224,8 +226,8 @@ export default class TodoWidget {
         console.log(taskDiv)
         if (taskTitle === this.currentTitle) return;
         try {
-            fetch('http://127.0.0.1:8000/widgets/task/update-title/', {
-                method: 'POST',
+            fetch('http://127.0.0.1:8000/widgets/task/', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.csrfToken
@@ -254,8 +256,8 @@ export default class TodoWidget {
         if (!taskDiv) return;
         const taskId = taskDiv.dataset.taskId
         try {
-            fetch('http://127.0.0.1:8000/widgets/task/delete/', {
-                method: 'POST',
+            fetch('http://127.0.0.1:8000/widgets/task/', {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.csrfToken
@@ -280,8 +282,8 @@ export default class TodoWidget {
     }
     deleteWidget(widgetId) {
         // Envoie une requête POST pour supprimer le widget
-        fetch("http://127.0.0.1:8000/widgets/delete-widget/", {
-            method: 'POST',
+        fetch("http://127.0.0.1:8000/widgets/widget-manager/", {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': this.csrfToken  // CSRF token pour la sécurité
