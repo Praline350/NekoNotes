@@ -12,6 +12,8 @@ User = get_user_model()
 
 @pytest.mark.django_db
 class TestLogin:
+    def setup_method(self):
+        self.client = Client()
 
     def test_login_form_valid_data(self):
         # Données valides pour le formulaire
@@ -40,6 +42,83 @@ class TestLogin:
         assert not form.is_valid()
         assert "password" in form.errors
 
+    def test_login_view_get_authenticated_user_redirect(self):
+        # Créer un utilisateur et se connecter
+        user = User.objects.create_user(
+            username="testuser", password="securepassword123"
+        )
+        self.client.login(username="testuser", password="securepassword123")
+
+        # Effectuer une requête GET
+        response = self.client.get(reverse("login"))
+
+        # Vérifier que l'utilisateur authentifié est redirigé vers la page "home"
+        assert response.status_code == 302
+        assert response.url == reverse("home")
+
+    def test_login_view_get_anonymous_user(self):
+        # Requête GET pour un utilisateur non authentifié
+        response = self.client.get(reverse("login"))
+
+        # Vérifier que la page de connexion est chargée avec un formulaire
+        assert response.status_code == 200
+        assert (
+            "login_form" in response.context
+        )  # Vérifie que le formulaire est dans le contexte
+
+    def test_login_view_post_valid_credentials(self):
+        # Créer un utilisateur dans la base de données
+        user = User.objects.create_user(
+            username="testuser", password="securepassword123"
+        )
+
+        # Envoyer une requête POST avec des identifiants valides
+        response = self.client.post(
+            reverse("login"),
+            data={"login_username": "testuser", "password": "securepassword123"},
+        )
+
+        # Vérifier que l'utilisateur est connecté et redirigé vers "home"
+        assert response.status_code == 302
+        assert response.url == reverse("home")
+        assert response.wsgi_request.user.is_authenticated
+
+    def test_login_view_post_invalid_credentials(self):
+        # Envoyer une requête POST avec des identifiants invalides
+        response = self.client.post(
+            reverse("login"),
+            data={"login_username": "wronguser", "password": "wrongpassword"},
+        )
+
+        # Vérifier que l'utilisateur reste sur la page de connexion
+        assert response.status_code == 200
+        assert not response.wsgi_request.user.is_authenticated
+        assert "Identifiants invalides" in response.content.decode()
+
+    def test_login_view_post_invalid_form(self):
+        # Envoyer une requête POST avec un formulaire incomplet
+        response = self.client.post(
+            reverse("login"), data={"login_username": "", "password": ""}
+        )
+
+        # Vérifier que l'utilisateur reste sur la page de connexion avec une erreur
+        assert response.status_code == 200
+        assert not response.wsgi_request.user.is_authenticated
+        messages = list(get_messages(response.wsgi_request))
+        assert any(
+            "Erreur lors de l'inscription" in str(message) for message in messages
+        )
+
+    def test_logout(self):
+        User.objects.create(username="testuser", password="securepassword123")
+        self.client.login(username="testuser", password="securepassword123")
+        url = reverse("logout")
+        response = self.client.get(url)
+
+        assert not "_auth_user_id" in self.client.session
+        assert response.status_code == 302
+        assert response.url == reverse("welcome")
+
 
 @pytest.mark.django_db
 class TestSignupForm:
@@ -57,7 +136,7 @@ class TestSignupForm:
 
     def test_signup_form_email_already_exists(self):
         # Création d'un utilisateur avec une adresse e-mail
-        User.objects.create_user(
+        user = User.objects.create_user(
             username="existinguser",
             email="existing@example.com",
             password="password123",
@@ -73,6 +152,7 @@ class TestSignupForm:
         form = SignupForm(data=form_data)
         assert not form.is_valid()
         assert "email" in form.errors  # Vérifie que le formulaire rejette l'email
+        assert str(user) == "existinguser"  # test __str__ model
 
     def test_signup_form_password_mismatch(self):
         # Mot de passe et confirmation ne correspondent pas

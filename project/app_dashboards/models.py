@@ -71,3 +71,10 @@ class Widget(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class EmptyWidget(Widget):
+    pass
+
+    def __str__(self):
+        return self.name
