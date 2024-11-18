@@ -9,17 +9,17 @@ User = get_user_model()
 
 
 class DashboardManager(models.Manager):
-    def get_widgets(self, dashboard):
-        # Récupère toutes les sous-classes de Widget
-        widget_classes = Widget.__subclasses__()
-        widgets = []
-        # Pour chaque sous-classe, récupère les instances liées au dashboard donné
-        for cls in widget_classes:
-            # Filtre les widgets de la sous-classe actuelle associés au dashboard
-            widgets.extend(cls.objects.filter(dashboard=dashboard))
-        return widgets
+    # def get_widgets(self, dashboard):
+    #     # Récupère toutes les sous-classes de Widget
+    #     widget_classes = Widget.__subclasses__()
+    #     widgets = []
+    #     # Pour chaque sous-classe, récupère les instances liées au dashboard donné
+    #     for cls in widget_classes:
+    #         # Filtre les widgets de la sous-classe actuelle associés au dashboard
+    #         widgets.extend(cls.objects.filter(dashboard=dashboard))
+    #     return widgets
 
-    def get_widget_by_id(self, widget_id):
+    def get_widget(self, widget_id):
         # Parcourt chaque sous-classe de Widget pour trouver celle avec cet ID
         for cls in Widget.__subclasses__():
             try:
@@ -68,9 +68,6 @@ class Widget(models.Model):
 
     class Meta:
         abstract = True  # Abstraite pour héritage
-
-    def __str__(self):
-        return self.name
 
 
 class EmptyWidget(Widget):

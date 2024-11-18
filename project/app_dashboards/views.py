@@ -16,8 +16,6 @@ class HomeView(View):
     def get(self, request):
         dashboard = Dashboard.objects.get(user=request.user)
         widgets = dashboard.widgets.all()
-        for widget in widgets:
-            print(widget.name)
         context = {
             "widgets": widgets,
         }

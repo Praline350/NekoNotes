@@ -117,7 +117,7 @@ class TestLogin:
 
         assert not "_auth_user_id" in self.client.session
         assert response.status_code == 302
-        assert response.url == reverse("welcome")
+        assert response.url == "/accounts/login/?next=/logout/"
 
 
 @pytest.mark.django_db

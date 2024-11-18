@@ -29,17 +29,7 @@ class TestTodoList:
         title = "My todo list"
         todo_list = SimpleTodoList.objects.create(dashboard=self.dashboard, name=title)
         todo_list.tasks.add(self.task1)
+        widget = Dashboard.objects.get_widget(widget_id=todo_list.id)
 
         assert todo_list.name == title
-
-        widgets = self.dashboard.widgets.all()
-        for widget in widgets:
-            print(f"Widget : {widget.id}, {widget.dashboard_id}")
-
-        widget = Dashboard.objects.get_widgets(dashboard=self.dashboard)
-
-        print(f"widget filter :  {widget}")
-
-        widget = Dashboard.objects.get_widget_by_id(widget_id=todo_list.id)
-
         assert todo_list.name == widget.name

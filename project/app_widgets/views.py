@@ -33,7 +33,7 @@ class WidgetMaker(View):
         data = json.loads(request.body)
         widget_id = data.get("widget_id")
         try:
-            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
+            widget = Dashboard.objects.get_widget(widget_id=widget_id)
             if widget:
                 widget.delete()
                 return JsonResponse({"success": True})
@@ -73,7 +73,7 @@ class SimpleTodoWidget(View):
         widget_id = data.get("widget_id")
         new_title = data.get("new_title")
         try:
-            widget = Dashboard.objects.get_widget_by_id(widget_id=widget_id)
+            widget = Dashboard.objects.get_widget(widget_id=widget_id)
             widget.title = new_title
             widget.save()
             return JsonResponse({"success": True})

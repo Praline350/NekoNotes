@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from app_dashboards.models import Widget
+from app_dashboards.models import Widget, Dashboard
 
 
 class Task(models.Model):
@@ -15,6 +15,9 @@ class Task(models.Model):
 
 
 class SimpleTodoList(Widget):
+    dashboard = models.ForeignKey(
+        Dashboard, on_delete=models.CASCADE, related_name="simple_todo_list"
+    )
     name = models.CharField(max_length=120, default="Simple Todo List")
     title = models.CharField(max_length=120, default="Simple Todo List")
     created_at = models.DateTimeField(auto_now_add=True)
