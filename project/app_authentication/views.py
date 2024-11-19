@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,8 @@ from django.views.generic import View
 from django.contrib import messages
 
 from .forms import LoginForm, SignupForm
+
+logger = logging.getLogger("custom_logger")
 
 
 User = get_user_model()
@@ -64,6 +67,7 @@ class LoginView(View):
                 login(request, user)
                 return redirect("home")
             else:
+                logger.warning(f"Erreur, identifiant invalide")
                 messages.error(request, "Identifiants invalides")
         else:
             messages.error(request, "Erreur lors de l'inscription")
