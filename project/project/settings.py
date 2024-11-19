@@ -3,6 +3,7 @@ Django settings for project NekoNotes
 """
 
 import os
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -98,6 +99,61 @@ DATABASES = {
             "NAME": "test_nekonotes_db",
         },
     }
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {pathname} function -> {funcName} | line : {lineno} -> {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "info_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/info.log"),
+            "formatter": "verbose",
+            "filters": ["info_only"],
+        },
+        "warning_file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/warnings.log"),
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["info_file", "warning_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "custom_logger": {
+            "handlers": ["info_file", "warning_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+    "filters": {
+        # Filtre pour exclure tout sauf INFO
+        "info_only": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": lambda record: record.levelno == logging.INFO,
+        }
+    },
 }
 
 

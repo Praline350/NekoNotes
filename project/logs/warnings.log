@@ -1,0 +1,7 @@
+WARNING 2024-11-19 10:23:29,497 views Erreur, identifiant invalide
+WARNING 2024-11-19 10:23:31,557 views Erreur, identifiant invalide
+WARNING 2024-11-19 10:23:45,308 views Erreur, identifiant invalide
+WARNING 2024-11-19 10:43:03,903 D:\dev_projects\NekoNotes\project\app_authentication\views.py.views--post/line : 70 Erreur, identifiant invalide
+WARNING 2024-11-19 10:44:03,355 views.py.views - post / line : 70 - Erreur, identifiant invalide
+WARNING 2024-11-19 10:45:08,756 D:\dev_projects\NekoNotes\project\app_authentication\views.py function -> post | line : 70 -> Erreur, identifiant invalide
+WARNING 2024-11-19 10:45:10,897 D:\dev_projects\NekoNotes\project\app_authentication\views.py function -> post | line : 70 -> Erreur, identifiant invalide
