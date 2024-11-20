@@ -20,7 +20,7 @@ class HomeView(View):
     def get(self, request):
         try:
             dashboard = Dashboard.objects.get(user=request.user)
-            widgets = dashboard.widgets.all()
+            widgets = Dashboard.objects.get_widgets(dashboard)
             context = {
                 "widgets": widgets,
             }
