@@ -9,4 +9,4 @@ class AdminTask(admin.ModelAdmin):
 
 @admin.register(SimpleTodoList)
 class AdminSimpleTodoList(admin.ModelAdmin):
-    list_display = ["name", "created_at"]
+    list_display = ["name", "title", "created_at"]

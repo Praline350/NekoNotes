@@ -9,15 +9,15 @@ User = get_user_model()
 
 
 class DashboardManager(models.Manager):
-    # def get_widgets(self, dashboard):
-    #     # Récupère toutes les sous-classes de Widget
-    #     widget_classes = Widget.__subclasses__()
-    #     widgets = []
-    #     # Pour chaque sous-classe, récupère les instances liées au dashboard donné
-    #     for cls in widget_classes:
-    #         # Filtre les widgets de la sous-classe actuelle associés au dashboard
-    #         widgets.extend(cls.objects.filter(dashboard=dashboard))
-    #     return widgets
+    def get_widgets(self, dashboard):
+        # Récupère toutes les sous-classes de Widget
+        widget_classes = Widget.__subclasses__()
+        widgets = []
+        # Pour chaque sous-classe, récupère les instances liées au dashboard donné
+        for cls in widget_classes:
+            # Filtre les widgets de la sous-classe actuelle associés au dashboard
+            widgets.extend(cls.objects.filter(dashboard=dashboard))
+        return widgets
 
     def get_widget(self, widget_id):
         # Parcourt chaque sous-classe de Widget pour trouver celle avec cet ID
@@ -47,6 +47,8 @@ class Widget(models.Model):
     )
     name = models.CharField(max_length=128, default="Widget")
     description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     # Champs pour les informations Back-end
 
