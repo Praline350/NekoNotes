@@ -49,13 +49,13 @@ class SimpleTodoList(Widget):
         return self.name
 
 
-class Timetable(Widget):
+class TimeTable(Widget):
     dashboard = models.ForeignKey(
-        Dashboard, on_delete=models.CASCADE, related_name="timetable"
+        Dashboard, on_delete=models.CASCADE, related_name="time_table"
     )
-    name = models.CharField(max_length=120, default="Timetable")
-    title = models.CharField(max_length=120, default="Timetable")
-    week_number = models.PositiveIntegerField()
+    name = models.CharField(max_length=120, default="Time Table")
+    title = models.CharField(max_length=120, default="Time Table")
+    week_number = models.PositiveIntegerField(null=True)
     period = models.CharField(max_length=50, blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -64,8 +64,8 @@ class Timetable(Widget):
         end_date = start_date + timedelta(
             days=6
         )  # Fin de la semaine, 6 jours après le début
-        self.period = f"Week from {start_date.day} to {end_date.day}"
-        super(Timetable, self).save(*args, **kwargs)
+        self.period = f"from {start_date.day} to {end_date.day}"
+        super(TimeTable, self).save(*args, **kwargs)
 
     def get_start_of_week(self):
         """Retourne le début de la semaine (lundi de la semaine courante)."""
@@ -82,7 +82,7 @@ class Timetable(Widget):
 
 class Day(models.Model):
     timetable = models.ForeignKey(
-        Timetable, on_delete=models.CASCADE, related_name="days"
+        TimeTable, on_delete=models.CASCADE, related_name="days"
     )
     name = models.CharField(max_length=20, choices=DAYS)
     tasks = models.ManyToManyField(Task, related_name="days", blank=True)

@@ -12,6 +12,9 @@
             {% if widget.name == 'Simple Todo List' %}
                 {% include 'components/widgets/simple_todo_list.html' with widget=widget %}
             {% endif %}
+            {% if widget.name == 'Time Table' %}
+                {% include 'components/widgets/time_table.html' with time_table=widget %}
+            {% endif %}
         {% endfor %}
 
 

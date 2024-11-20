@@ -2,13 +2,13 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from datetime import date
 
-from .models import Timetable, Day, SimpleTodoList
+from .models import TimeTable, Day, SimpleTodoList
 from .models import DAYS
 
 
 class TimetableSignals:
     @staticmethod
-    @receiver(post_save, sender=Timetable)
+    @receiver(post_save, sender=TimeTable)
     def create_days_for_timetable(sender, instance, created, **kwargs):
         """Créer les 7 jours de la semaine de la timetable"""
         if created:  # Si le Timetable vient d'être créé

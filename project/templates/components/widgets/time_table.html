@@ -1,0 +1,38 @@
+<div class="widget timeTable" data-widget-id="{{time_table.id}}">
+    <div class="widget--header timeTable--header">
+        <input 
+        type="text" 
+        class="widget--title timeTable--title" 
+        value="{% if widget.title != 'Time Table' %}{{ time_table.title }}{% endif %}" 
+        placeholder="Your Time Table" 
+        title="Click to edit title"
+        />
+        <h3 class="timeTable--subTitle">Week {{time_table.week_number}} | {{time_table.period}}</h2>
+        <button class="widget--delete" >X</button>
+    </div>
+    <div class="timeTable--content">
+        {% for day in time_table.days.all %}
+        <div class="day">
+            <div class="day--header">
+                <h3 class="day--name">{{day.name}}</h3>
+            </div>
+            <div class="task-container">
+                {% if day.tasks.all != 0 %}
+                    {% for task in day.tasks.all %}
+                        {% include 'components/widgets/task.html' %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="addTask--container addTask timeTable--addTask">
+                <label class="addTask--label" for="taskTitle-{{day.id}}">Add task</label>
+                <input type="text" 
+                       id="taskTitle-{{day.id}}" 
+                       class="addTask--title taskTitle" 
+                       value="" 
+                       title="Click to edit title"/>
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

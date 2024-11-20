@@ -13,7 +13,10 @@
 
 // widgets
 
-@import 'components/simpleTodoList.scss';
+@import 'components/widgets.scss';
+// TODO : REFACTO DES WIDGETS !!!!!
+
+@import 'components/widgets/timeTable.scss';
 
 // Notifs
 
