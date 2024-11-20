@@ -29,12 +29,3 @@ class SimpleTodoList(Widget):
 
     def __str__(self):
         return self.name
-
-    def update_progress_bar(self):
-        total_tasks = self.tasks.count()
-        if total_tasks == 0:
-            self.progress_bar = 100
-        else:
-            completed_tasks = self.tasks.filter(completed=True).count()
-            self.progress_bar = int((completed_tasks / total_tasks) * 100)
-        self.save()

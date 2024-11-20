@@ -38,30 +38,23 @@ class WidgetMaker(View):
             except json.JSONDecodeError as e:
                 logger.error(f"Erreur lors du parsing JSON : {e}")
                 return JsonResponse({"error": "Invalid JSON format"}, status=400)
-            except Exception as e:
-                logger.exception(f"Erreur inattendue lors de la requête POST : {e}")
-                return JsonResponse({"error": "Internal server error"}, status=500)
 
     def delete(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        widget_id = data.get("widget_id")
         try:
+            data = json.loads(request.body)
+            widget_id = data.get("widget_id")
             widget = Dashboard.objects.get_widget(widget_id=widget_id)
             if widget:
                 widget.delete()
                 return JsonResponse({"success": True})
             else:
                 logger.warning(f"Widget avec ID {widget_id} non trouvé.")
-                return JsonResponse({"success": False, "error": "widget not found"})
-        except Dashboard.DoesNotExist:
-            logger.error(f"Dashboard non trouvé pour widget_id : {widget_id}")
-            return JsonResponse({"success": False, "error": "Dashboard not found"})
+                return JsonResponse(
+                    {"success": False, "error": "widget not found"}, status=404
+                )
         except json.JSONDecodeError as e:
             logger.error(f"Erreur lors du parsing JSON : {e}")
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
-        except Exception as e:
-            logger.exception(f"Erreur inattendue lors de la requête DELETE : {e}")
-            return JsonResponse({"error": "Internal server error"}, status=500)
 
     def create_widget(self, request, widget_name):
         match widget_name:
@@ -90,46 +83,49 @@ class WidgetMaker(View):
 
 class SimpleTodoWidget(View):
     def put(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        print(f"data json : {data}")
-        widget_id = data.get("widget_id")
-        new_title = data.get("new_title")
         try:
+            data = json.loads(request.body)
+            widget_id = data.get("widget_id")
+            new_title = data.get("new_title")
             widget = Dashboard.objects.get_widget(widget_id=widget_id)
-            widget.title = new_title
-            widget.save()
-            return JsonResponse({"success": True})
-        except Widget.DoesNotExist:
-            logger.error(f"Widget introuvable pour l'utilisateur {request.user}.")
-            return JsonResponse({"success": False, "error": "Widget not found"})
+            if widget:
+                widget.title = new_title
+                widget.save()
+                return JsonResponse({"success": True})
+            else:
+                logger.error(f"Widget introuvable pour l'utilisateur {request.user}.")
+                return JsonResponse(
+                    {"success": False, "error": "Widget not found"}, status=404
+                )
+        except json.JSONDecodeError as e:
+            logger.error(f"Erreur lors du parsing JSON : {e}")
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
 
 @method_decorator(login_required, name="dispatch")
 class TaskView(View):
 
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        print(f"data json : {data}")
-        widget_id = data.get("widget_id")
-        title = data.get("title")
         try:
+            data = json.loads(request.body)
+            widget_id = data.get("widget_id")
+            title = data.get("title")
             todo_list = SimpleTodoList.objects.get(id=widget_id)
-            task = Task.objects.create(title=title)
-            todo_list.tasks.add(task)
-            task_html = render(
-                request, "components/widgets/task.html", context={"task": task}
-            ).content.decode("utf-8")
-            return JsonResponse({"task_html": task_html})
-        except SimpleTodoList.DoesNotExist:
-            logger.warning(
-                f"Le widget est introuvable pour l'utilisatuer {request.user}"
-            )
-            return JsonResponse(
-                {"success": False, "error": "TodoList non trouvée"}, status=404
-            )
-        except Exception as e:
-            logger.exception(f"Erreur inattendue lors de la requête POST : {e}")
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            if todo_list:
+                task = Task.objects.create(title=title)
+                todo_list.tasks.add(task)
+                task_html = render(
+                    request, "components/widgets/task.html", context={"task": task}
+                ).content.decode("utf-8")
+                return JsonResponse({"task_html": task_html})
+            else:
+                logger.error(f"Widget introuvable pour l'utilisateur {request.user}.")
+                return JsonResponse(
+                    {"success": False, "error": "Widget not found"}, status=404
+                )
+        except json.JSONDecodeError as e:
+            logger.error(f"Erreur lors du parsing JSON : {e}")
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
     def put(self, request, *args, **kwargs):
         """

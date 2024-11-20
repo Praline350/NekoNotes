@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Récupère tous les boutons d'ouverture de modale
-    console.log('ok')
     const openModalButtons = document.querySelectorAll("[data-modal-target]");
     const closeModalButtons = document.querySelectorAll(".closeBtn");
 

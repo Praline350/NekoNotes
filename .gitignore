@@ -4,3 +4,4 @@ pyproject.toml
 __pycache__/
 .coverage
 project/staticfiles/
+logs/

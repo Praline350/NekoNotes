@@ -24,6 +24,8 @@ class TestTodoList:
         assert todo_list.name == title
         assert todo_list.dashboard.user == self.user
         assert todo_list.tasks.count() == 1
+        assert str(todo_list) == todo_list.name
+        assert str(self.task1) == self.task1.title
 
     def test_select_widget(self):
         title = "My todo list"

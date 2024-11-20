@@ -16,6 +16,7 @@ export default class TodoWidget {
         this.initializeEventListeners();
         this.updateProgressBar();
     }
+    // Timeout pour évité les doubles appel a une fonction (evite les requete en double)
     debounce(func, delay) {
         let timeout;
         return function (...args) {
